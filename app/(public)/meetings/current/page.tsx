@@ -21,7 +21,8 @@ export default async function CurrentMeetingPage() {
     String(today.getDate()).padStart(2, "0"),
   ].join("-");
 
-  const meeting = getMeetingByDate(sundayDate);
+  // Wait for the Neon database query.
+  const meeting = await getMeetingByDate(sundayDate);
 
   if (meeting) {
     redirect(`/meetings/${meeting.id}`);

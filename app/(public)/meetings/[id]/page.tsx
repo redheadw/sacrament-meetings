@@ -5,12 +5,14 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import MeetingDetail from "@/components/MeetingDetail";
 import type { SacramentMeeting } from "@/lib/types";
+import { connection } from "next/server";
 
 interface MeetingPageProps {
   params: Promise<{ id: string }>;
 }
 
 async function MeetingContent({ params }: MeetingPageProps) {
+   await connection();
   const { id } = await params;
 
   if (!/^\d+$/.test(id)) {

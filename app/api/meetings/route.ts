@@ -1,16 +1,39 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { getMeetings } from "@/lib/meetings-db";
-import type { SacramentMeeting } from "@/lib/types";
+import { connection } from "next/server";
+
+import {
+  getMeetings,
+  getMeetingByDate,
+} from "@/lib/meetings-db";
 
 export async function GET(request: NextRequest) {
-  const date = request.nextUrl.searchParams.get("date");
+  // Wait for an incoming request before accessing
+  // dynamic URL search parameters.
+  await connection();
 
-  const meetings: SacramentMeeting[] = getMeetings();
+  try {
+    const date = request.nextUrl.searchParams.get("date");
 
-  const results = date
-    ? meetings.filter((meeting) => meeting.date === date)
-    : meetings;
+    // Search for a specific meeting date
+    if (date) {
+      const meeting = await getMeetingByDate(date);
 
-  return NextResponse.json(results);
+      return NextResponse.json(
+        meeting ? [meeting] : []
+      );
+    }
+
+    // Get meetings from Neon
+    const meetings = await getMeetings();
+
+    return NextResponse.json(meetings);
+  } catch (error) {
+    console.error("Error fetching meetings:", error);
+
+    return NextResponse.json(
+      { error: "Failed to fetch meetings" },
+      { status: 500 }
+    );
+  }
 }
