@@ -12,7 +12,7 @@ export default function Header() {
         </h1>
 
         <p className="mt-1 text-sm text-green-100">
-          Sample Ward | <CurrentDate />
+          Lake Valley | <CurrentDate />
         </p>
 
         <Suspense fallback={<span>Loading navigation...</span>}>
