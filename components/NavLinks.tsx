@@ -1,15 +1,14 @@
-
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 export default function NavLinks() {
   const pathname = usePathname();
 
   const links = [
     { href: "/", label: "Home" },
     { href: "/meetings", label: "Meetings" },
+    { href: "/meetings/new", label: "Create Meeting" },
   ];
 
   return (
@@ -19,7 +18,11 @@ export default function NavLinks() {
           const isActive =
             link.href === "/"
               ? pathname === "/"
-              : pathname.startsWith(link.href);
+              : link.href === "/meetings"
+                ? pathname === "/meetings" ||
+                  (pathname.startsWith("/meetings/") &&
+                    pathname !== "/meetings/new")
+                : pathname === link.href;
 
           return (
             <Link
