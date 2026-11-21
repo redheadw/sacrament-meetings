@@ -3,16 +3,19 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import MeetingDetail from "@/components/MeetingDetail";
-import type { SacramentMeeting } from "@/lib/types";
 import { connection } from "next/server";
+
+import MeetingDetail from "@/components/MeetingDetail";
+import DeleteMeetingButton from "@/components/DeleteMeetingButton";
+import type { SacramentMeeting } from "@/lib/types";
 
 interface MeetingPageProps {
   params: Promise<{ id: string }>;
 }
 
 async function MeetingContent({ params }: MeetingPageProps) {
-   await connection();
+  await connection();
+
   const { id } = await params;
 
   if (!/^\d+$/.test(id)) {
@@ -56,6 +59,17 @@ async function MeetingContent({ params }: MeetingPageProps) {
       </nav>
 
       <MeetingDetail meeting={meeting} />
+
+      <div className="flex flex-wrap items-start gap-4 border-t border-gray-200 pt-6 print:hidden">
+        <Link
+          href={`/meetings/${meeting.id}/edit`}
+          className="inline-flex items-center rounded bg-green-800 px-4 py-2 font-semibold text-white hover:bg-green-900"
+        >
+          Edit Meeting
+        </Link>
+
+        <DeleteMeetingButton meetingId={meeting.id} />
+      </div>
 
       <p className="text-sm text-gray-600 print:hidden">
         To print this program, press Ctrl + P
