@@ -15,10 +15,8 @@ import {
   deleteMeeting as deleteMeetingInDb,
 } from "@/lib/meetings-db";
 
-// Type for validated meeting form data
 type MeetingFormData = z.infer<typeof MeetingFormSchema>;
 
-// Validate submitted form fields
 function validateMeeting(formData: FormData) {
   return MeetingFormSchema.safeParse({
     date: formData.get("date"),
@@ -47,10 +45,7 @@ function validateMeeting(formData: FormData) {
   });
 }
 
-// Check that speaker name and topic are both provided
-function validateSpeaker(
-  data: MeetingFormData
-): State | null {
+function validateSpeaker(data: MeetingFormData): State | null {
   if (
     (data.speakerName && !data.speakerTopic) ||
     (!data.speakerName && data.speakerTopic)
@@ -60,7 +55,6 @@ function validateSpeaker(
         speakerName: !data.speakerName
           ? ["Speaker name is required when a topic is entered."]
           : undefined,
-
         speakerTopic: !data.speakerTopic
           ? ["Speaker topic is required when a name is entered."]
           : undefined,
@@ -72,7 +66,6 @@ function validateSpeaker(
   return null;
 }
 
-// Convert validated form data into the database structure
 function buildMeeting(
   data: MeetingFormData
 ): Omit<SacramentMeeting, "id"> {
@@ -140,7 +133,6 @@ export async function createMeeting(
   }
 
   const data = validatedFields.data;
-
   const speakerError = validateSpeaker(data);
 
   if (speakerError) {
@@ -185,7 +177,6 @@ export async function updateMeeting(
   }
 
   const data = validatedFields.data;
-
   const speakerError = validateSpeaker(data);
 
   if (speakerError) {
@@ -219,7 +210,7 @@ export async function updateMeeting(
   redirect(`/meetings/${id}`);
 }
 
-
+// DELETE MEETING
 export async function deleteMeeting(
   id: number
 ): Promise<void> {
