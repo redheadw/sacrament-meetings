@@ -1,15 +1,18 @@
 
+import MeetingForm from "@/components/MeetingForm";
+
 export default function NewMeetingPage() {
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-green-900">
-        Create Meeting — Coming in Week 04
+    <main className="mx-auto max-w-3xl p-6">
+      <h1 className="mb-6 text-3xl font-bold text-green-900">
+        Create New Sacrament Meeting
       </h1>
 
-      <p className="text-gray-700">
-        The meeting creation form will be implemented
-        in Week 04.
+      <p className="mb-8 text-gray-700">
+        Enter the meeting details for Lake Valley Ward.
       </p>
-    </div>
+
+      <MeetingForm />
+    </main>
   );
 }
