@@ -1,9 +1,15 @@
 
+import { Suspense } from "react";
+import { connection } from "next/server";
 import MeetingForm from "@/components/MeetingForm";
+import { requireApprovedAdmin } from "@/lib/require-admin";
 
-export default function NewMeetingPage() {
+async function ProtectedMeetingForm() {
+  await connection();
+  await requireApprovedAdmin();
+
   return (
-    <main className="mx-auto max-w-3xl p-6">
+    <section className="mx-auto max-w-3xl p-6">
       <h1 className="mb-6 text-3xl font-bold text-green-900">
         Create New Sacrament Meeting
       </h1>
@@ -13,6 +19,14 @@ export default function NewMeetingPage() {
       </p>
 
       <MeetingForm />
-    </main>
+    </section>
+  );
+}
+
+export default function NewMeetingPage() {
+  return (
+    <Suspense fallback={<p>Checking administrator access...</p>}>
+      <ProtectedMeetingForm />
+    </Suspense>
   );
 }

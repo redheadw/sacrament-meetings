@@ -1,5 +1,27 @@
 
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
+import { connection } from "next/server";
+import { requireApprovedAdmin } from "@/lib/require-admin";
+import SignOutButton from "@/components/SignOutButton";
+
+async function ProtectedAdminContent({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  await connection();
+  await requireApprovedAdmin();
+
+  return (
+    <>
+      <div className="mb-4 flex justify-end">
+        <SignOutButton />
+      </div>
+
+      {children}
+    </>
+  );
+}
 
 export default function AdminLayout({
   children,
@@ -12,12 +34,17 @@ export default function AdminLayout({
         <h2 className="text-2xl font-bold text-green-900">
           Meeting Administration
         </h2>
+
         <p className="mt-2 text-gray-700">
           Meeting management tools for ward leaders.
         </p>
       </div>
 
-      {children}
+      <Suspense fallback={<p>Checking administrator access...</p>}>
+        <ProtectedAdminContent>
+          {children}
+        </ProtectedAdminContent>
+      </Suspense>
     </section>
   );
 }

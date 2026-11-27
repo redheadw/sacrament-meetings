@@ -1,18 +1,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import templeImage from "./opengraph-image.png";
 
 export default function Home() {
   return (
     <div className="space-y-8">
       <section className="rounded-xl bg-white p-8 shadow-md">
-        <h2 className="text-3xl font-bold text-green-900">
+        <h1 className="text-3xl font-bold text-green-900">
           Welcome to the Sacrament Meeting Planner
-        </h2>
+        </h1>
 
         <p className="mt-4 text-lg text-gray-700">
           Plan, organize, and view weekly sacrament meeting
-          programs for Sample Ward.
+          programs for Lake Valley Ward.
         </p>
 
         <p className="mt-3 text-gray-600">
@@ -36,11 +37,10 @@ export default function Home() {
         </h2>
 
         <Image
-          src="/window.svg"
-          alt="Decorative window illustration"
-          width={160}
-          height={160}
-          className="mx-auto mb-4"
+          src={templeImage}
+          alt="Oklahoma City Oklahoma Temple"
+          sizes="(max-width: 768px) 100vw, 900px"
+          className="mx-auto mb-4 h-auto w-full rounded-lg shadow-sm"
         />
 
         <p className="text-center text-gray-700">
