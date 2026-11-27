@@ -1,8 +1,18 @@
 
+import type { Metadata } from "next";
 import MeetingCard from "@/components/MeetingCard";
 import { MeetingSearch } from "@/components/MeetingSearch";
-import { getMeetings, getMeetingsTotalPages, } from "@/lib/meetings-db";
+import {
+  getMeetings,
+  getMeetingsTotalPages,
+} from "@/lib/meetings-db";
 import { Pagination } from "@/components/Pagination";
+
+export const metadata: Metadata = {
+  title: "Meetings | Sacrament Meeting Planner",
+  description:
+    "Browse weekly sacrament meeting schedules, including hymns, speakers, prayers, and announcements.",
+};
 
 interface MeetingsPageProps {
   searchParams: Promise<{

@@ -2,9 +2,11 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import MeetingForm from "@/components/MeetingForm";
 import { getMeetingById } from "@/lib/meetings-db";
+import { requireApprovedAdmin } from "@/lib/require-admin";
 
 interface EditMeetingPageProps {
   params: Promise<{
@@ -15,6 +17,9 @@ interface EditMeetingPageProps {
 async function EditMeetingContent({
   params,
 }: EditMeetingPageProps) {
+  await connection();
+  await requireApprovedAdmin();
+
   const { id } = await params;
   const meetingId = Number(id);
 
@@ -48,7 +53,7 @@ export default function EditMeetingPage({
   params,
 }: EditMeetingPageProps) {
   return (
-    <main className="mx-auto max-w-3xl p-8">
+    <section className="mx-auto max-w-3xl p-8">
       <h1 className="mb-4 text-3xl font-bold text-green-900">
         Edit Meeting
       </h1>
@@ -57,9 +62,9 @@ export default function EditMeetingPage({
         Update the meeting details below.
       </p>
 
-      <Suspense fallback={<p>Loading meeting details...</p>}>
+      <Suspense fallback={<p>Checking access and loading meeting details...</p>}>
         <EditMeetingContent params={params} />
       </Suspense>
-    </main>
+    </section>
   );
 }

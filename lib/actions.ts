@@ -8,6 +8,7 @@ import type { z } from "zod";
 import { MeetingFormSchema } from "@/lib/meeting-validation";
 import type { State } from "@/lib/meeting-form-state";
 import type { SacramentMeeting } from "@/lib/types";
+import { requireApprovedAdmin } from "@/lib/require-admin";
 
 import {
   addMeeting,
@@ -15,8 +16,10 @@ import {
   deleteMeeting as deleteMeetingInDb,
 } from "@/lib/meetings-db";
 
+// Type for validated meeting form data
 type MeetingFormData = z.infer<typeof MeetingFormSchema>;
 
+// Validate submitted form fields
 function validateMeeting(formData: FormData) {
   return MeetingFormSchema.safeParse({
     date: formData.get("date"),
@@ -45,6 +48,7 @@ function validateMeeting(formData: FormData) {
   });
 }
 
+// Check that speaker name and topic are both provided
 function validateSpeaker(data: MeetingFormData): State | null {
   if (
     (data.speakerName && !data.speakerTopic) ||
@@ -55,6 +59,7 @@ function validateSpeaker(data: MeetingFormData): State | null {
         speakerName: !data.speakerName
           ? ["Speaker name is required when a topic is entered."]
           : undefined,
+
         speakerTopic: !data.speakerTopic
           ? ["Speaker topic is required when a name is entered."]
           : undefined,
@@ -66,6 +71,7 @@ function validateSpeaker(data: MeetingFormData): State | null {
   return null;
 }
 
+// Convert validated form data into the database structure
 function buildMeeting(
   data: MeetingFormData
 ): Omit<SacramentMeeting, "id"> {
@@ -123,6 +129,9 @@ export async function createMeeting(
   prevState: State,
   formData: FormData
 ): Promise<State> {
+  // Require administrator authentication
+  await requireApprovedAdmin();
+
   const validatedFields = validateMeeting(formData);
 
   if (!validatedFields.success) {
@@ -160,6 +169,9 @@ export async function updateMeeting(
   prevState: State,
   formData: FormData
 ): Promise<State> {
+  // Require administrator authentication
+  await requireApprovedAdmin();
+
   if (!Number.isSafeInteger(id) || id <= 0) {
     return {
       errors: {},
@@ -214,6 +226,9 @@ export async function updateMeeting(
 export async function deleteMeeting(
   id: number
 ): Promise<void> {
+  // Require administrator authentication
+  await requireApprovedAdmin();
+
   if (!Number.isSafeInteger(id) || id <= 0) {
     throw new Error("Invalid meeting ID.");
   }
